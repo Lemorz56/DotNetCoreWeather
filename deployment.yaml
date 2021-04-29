@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-netcore-deployment
+spec:
+  selector:
+    matchLabels:
+      app: hello-netcore-pod
+  template:
+    metadata:
+      labels:
+        app: hello-netcore-pod
+    spec:
+      containers:
+      - name: hello-netcore-container
+        image: hello-netcore:v1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
