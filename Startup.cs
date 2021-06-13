@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NetCoreWeather;
+using Polly;
 
 namespace HelloNetCore
 {
@@ -37,7 +38,10 @@ namespace HelloNetCore
 
             // Registering our class into the services collection
             // Dotnet 5 will know to inject an http client object into the class
-            services.AddHttpClient<WeatherClient>();
+            services.AddHttpClient<WeatherClient>()
+            .AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(10, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))))
+            .AddTransientHttpErrorPolicy(builder => builder.CircuitBreakerAsync(3, TimeSpan.FromSeconds(15)));
+            // Added POLLY failsafe for service above, will sleep for exponential backoff
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
