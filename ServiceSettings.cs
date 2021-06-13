@@ -1,6 +1,6 @@
 namespace NetCoreWeather
 {
-	class ServiceSettings 
+	public class ServiceSettings 
 	{
 		public string OpenWeatherHost { get; set; }
 

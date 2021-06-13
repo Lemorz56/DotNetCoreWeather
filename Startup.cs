@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NetCoreWeather;
 
 namespace HelloNetCore
 {
@@ -26,12 +27,17 @@ namespace HelloNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ServiceSettings>(Configuration.GetSection(nameof(ServiceSettings)));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HelloNetCore", Version = "v1" });
             });
+
+            // Registering our class into the services collection
+            // Dotnet 5 will know to inject an http client object into the class
+            services.AddHttpClient<WeatherClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
